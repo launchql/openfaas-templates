@@ -1,0 +1,2 @@
+language: node12-graphql
+handler_folder: src/function
