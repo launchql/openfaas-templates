@@ -10,6 +10,7 @@ ENV NPM_CONFIG_LOGLEVEL warn
 
 # install base packages stripping out scripts:
 COPY package.json _package.json
+COPY bin bin
 RUN node ./bin/install.js
 RUN yarn install 
 

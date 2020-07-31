@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
-const merge = require('package-merge');
+const merge = require('@pyramation/package-merge');
 const dst = fs.readFileSync(__dirname + '/../_package.json');
 const src = fs.readFileSync(__dirname + '/../_handler.json');
 
