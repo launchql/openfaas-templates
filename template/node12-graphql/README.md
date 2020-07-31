@@ -1,1 +1,0 @@
-# node12-graphql

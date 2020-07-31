@@ -6,14 +6,17 @@ RUN mkdir -p /home/app
 WORKDIR /home/app
 ARG NPM_TOKEN  
 COPY .npmrc .npmrc 
-COPY package.json .
-ENV NODE_ENV production
 ENV NPM_CONFIG_LOGLEVEL warn
-RUN yarn install --production
+COPY . .
+RUN mv src/function/package.json _handler.json && node ./bin/merge.js
+RUN yarn install 
 RUN rm .npmrc
-# moving copy of main belowwwwwww install to see if it helps speed things up during build
-COPY main /home/app/main
+RUN yarn build
 RUN chown -R app:app /home/app
+
+# prune
+ENV NODE_ENV production
+RUN yarn install --production
 
 ENV cgi_headers="true"
 ENV fprocess="node main/index.js"
