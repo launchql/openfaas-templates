@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const merge = require('package-merge');
-const dst = fs.readFileSync(__dirname + '/../package.json');
+const dst = fs.readFileSync(__dirname + '/../_package.json');
 const src = fs.readFileSync(__dirname + '/../_handler.json');
 
 // Create a new `package.json`

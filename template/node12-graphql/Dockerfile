@@ -7,9 +7,16 @@ WORKDIR /home/app
 ARG NPM_TOKEN  
 COPY .npmrc .npmrc 
 ENV NPM_CONFIG_LOGLEVEL warn
-COPY . .
-RUN mv src/function/package.json _handler.json && node ./bin/merge.js
+
+# install base packages stripping out scripts:
+COPY package.json _package.json
+RUN node ./bin/install.js
 RUN yarn install 
+
+# get goods
+COPY . .
+RUN mv src/function/package.json _handler.json 
+RUN node ./bin/merge.js && yarn install
 RUN rm .npmrc
 RUN yarn build
 RUN chown -R app:app /home/app
