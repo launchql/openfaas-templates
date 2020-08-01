@@ -18,7 +18,9 @@ class FaasContext:
 
 class FaasServer(BaseHTTPServer.BaseHTTPRequestHandler):
     def getHeader (s, header):
-        return s.headers.getheaders(header)[0]
+        # in python 3 this is different
+        head = s.headers.getheaders(header)
+        return head[0] if head else None
     def setJobHeaders(s):
         s.send_response(200)
         s.send_header("Content-type", "application/json")
@@ -38,8 +40,12 @@ class FaasServer(BaseHTTPServer.BaseHTTPRequestHandler):
     def getReqParams(s):
         content_length = s.headers.getheaders('content-length')
         length = int(content_length[0]) if content_length else 0
-        content = s.rfile.read(length)
-        return json.loads(content)
+        
+        if length > 0:
+            content = s.rfile.read(length)
+            return json.loads(content)
+        else:
+            return json.loads('{}')
 
     def do_POST(s):
         params = s.getReqParams()
