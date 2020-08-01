@@ -7,7 +7,6 @@ const GetUsers = gql`
       nodes {
         id
         username
-        bitgAddress
       }
     }
   }
