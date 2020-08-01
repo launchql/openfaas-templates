@@ -16,7 +16,6 @@ WORKDIR /home/app/
 
 COPY index.py .
 COPY requirements.txt .
-COPY graphql graphql
 
 RUN chown -R app /home/app && \
   mkdir -p /home/app/python && chown -R app /home/app

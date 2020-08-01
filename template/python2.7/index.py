@@ -4,17 +4,9 @@ import json
 import BaseHTTPServer
 
 from function import handler
-from graphql import client
 
 hostName = "0.0.0.0"
 PORT = int(os.environ['PORT'])
-GRAPHQL_URL = os.environ['GRAPHQL_URL']
-
-GraphQL = client.GraphQLClient(GRAPHQL_URL)
-
-class FaasContext:
-    def __init__(self, client):
-        self.client = client
 
 class FaasServer(BaseHTTPServer.BaseHTTPRequestHandler):
     def getHeader (s, header):
@@ -51,8 +43,7 @@ class FaasServer(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_POST(s):
         params = s.getReqParams()
         try:
-            ctx = FaasContext(GraphQL)
-            val = handler.handle(params, ctx)
+            val = handler.handle(params)
             s.setJobHeaders()
             s.wfile.write(json.dumps(val))
         except Exception as e:
