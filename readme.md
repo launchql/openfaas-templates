@@ -10,8 +10,9 @@ list available templates
 faas-cli new --list
 ```
 
-create a new function
+create a new JS function for jobs
 
 ```sh
-faas-cli new --lang node12-graphql my-new-function
+faas-cli new --lang node12-graphql my-new-js-function
+faas-cli new --lang python2.7-graphql my-new-py-function
 ```

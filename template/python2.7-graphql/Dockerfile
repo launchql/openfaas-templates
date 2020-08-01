@@ -14,15 +14,16 @@ RUN addgroup -S app && adduser app -S -G app
 
 WORKDIR /home/app/
 
-COPY index.py           .
-COPY requirements.txt   .
+COPY index.py .
+COPY requirements.txt .
+COPY graphql graphql
 
 RUN chown -R app /home/app && \
   mkdir -p /home/app/python && chown -R app /home/app
+
 USER app
 ENV PATH=$PATH:/home/app/.local/bin:/home/app/python/bin/
 ENV PYTHONPATH=$PYTHONPATH:/home/app/python
-
 RUN pip install -r requirements.txt --target=/home/app/python
 
 RUN mkdir -p function
@@ -35,13 +36,12 @@ RUN pip install -r requirements.txt --target=/home/app/python
 
 WORKDIR /home/app/
 
+COPY function function
+
 USER root
-
-COPY function           function
-
-# Allow any user-id for OpenShift users.
 RUN chown -R app:app ./ && \
-  chmod -R 777 /home/app/python
+  chown -R app:app /home/app && \
+  chmod -R 777 /home/app
 
 USER app
 
