@@ -25,7 +25,7 @@ class FaasServer(BaseHTTPRequestHandler):
         self.send_header("X-Job-Id", self.headers.get('X-Job-Id'))
         self.send_header("X-Job-Error", True)
         self.end_headers()
-        self.wfile.write(json.dumps({'message': msg}))
+        self.wfile.write( bytes(json.dumps({'message': msg}), encoding='utf8') )
     
     def getReqParams(self):
         length = int(self.headers.get('content-length'))
@@ -41,7 +41,7 @@ class FaasServer(BaseHTTPRequestHandler):
         try:
             val = handler.handle(params)
             self.setJobHeaders()
-            self.wfile.write(json.dumps(val))
+            self.wfile.write( bytes(json.dumps(val), encoding='utf8') )
         except Exception as e:
             self.sendError(str(e))
 
