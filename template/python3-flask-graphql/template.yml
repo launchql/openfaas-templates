@@ -1,0 +1,2 @@
+language: python3-flask-graphql
+fprocess: python index.py
