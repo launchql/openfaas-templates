@@ -5,6 +5,7 @@ import json
 from flask import Flask, request, make_response
 from function import handler
 from waitress import serve
+from graphql import client
 
 hostName = "0.0.0.0"
 PORT = int(os.environ['PORT'])
@@ -37,7 +38,7 @@ def get_params (request):
 
     data = request.get_data(as_text=as_text)
     params = {}
-    if ('application/json' in request.headers['Content-Type']):
+    if ('application/json' in request.headers.get('Content-Type')):
         try:
             params = json.loads(data)
         except Exception as e:
@@ -56,8 +57,8 @@ def handle_error (resp, e):
 def faas_handler(path):
     resp = make_response()
     resp.headers['Content-Type'] = 'application/json'
-    resp.headers['X-Worker-Id'] = request.headers['X-Worker-Id']
-    resp.headers['X-Job-Id'] = request.headers['X-Job-Id']
+    resp.headers['X-Worker-Id'] = request.headers.get('X-Worker-Id')
+    resp.headers['X-Job-Id'] = request.headers.get('X-Job-Id')
 
     params = get_params(request)
 
