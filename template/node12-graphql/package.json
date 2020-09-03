@@ -62,10 +62,10 @@
     "regenerator-runtime": "^0.13.2"
   },
   "dependencies": {
-    "@apollo/client": "3.0.2",
     "@babel/runtime": "^7.4.2",
     "@launchql/openfaas-job-fn": "0.0.9",
-    "cross-fetch": "3.0.5",
+    "graphql-request": "3.0.0",
+    "cross-fetch": "^3.0.4",
     "envalid": "6.0.2",
     "graphql": "15.3.0",
     "graphql-tag": "2.10.4"
