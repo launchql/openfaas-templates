@@ -10,13 +10,16 @@ from graphql import client
 hostName = "0.0.0.0"
 PORT = int(os.environ['PORT'])
 GRAPHQL_URL = os.environ['GRAPHQL_URL']
+INTERNAL_JOBS_API_URL = os.environ['INTERNAL_JOBS_API_URL']
 
 app = Flask(__name__)
-GraphQL = client.GraphQLClient(GRAPHQL_URL)
+apiClient = client.GraphQLClient(GRAPHQL_URL)
+jobsClient = client.GraphQLClient(INTERNAL_JOBS_API_URL)
 
 class FaasContext:
-    def __init__(self, client):
+    def __init__(self, client, jobsClient):
         self.client = client
+        self.jobsClient = jobsClient
 
 # distutils.util.strtobool() can throw an exception
 def is_true(val):
@@ -63,7 +66,7 @@ def faas_handler(path):
     params = get_params(request)
 
     try:
-        ctx = FaasContext(GraphQL)
+        ctx = FaasContext(apiClient, jobsClient)
         value = handler.handle(params, ctx)
         resp.data = json.dumps(value)
     except Exception as e:
