@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.2",
-    "@launchql/openfaas-job-fn": "0.0.9",
+    "@launchql/openfaas-job-fn": "0.1.1",
     "graphql-request": "3.0.0",
     "cross-fetch": "^3.0.4",
     "envalid": "6.0.2",
