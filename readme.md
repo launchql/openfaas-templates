@@ -103,3 +103,7 @@ services:
       - postgres
 
 ```
+
+# developer notes
+
+Only difference in the private version of node and public is the `.npmrc` file. The public version has a build arg although it's not used for simplicity in keeping these repos "duplicates".
