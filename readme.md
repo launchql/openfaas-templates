@@ -106,4 +106,16 @@ services:
 
 # developer notes
 
+## how does it work for node12?
+
+### install
+
+look at the package.json, `prewatch` script. Essentially, only for development, when building the image via docker, the volume is NOT mounted. So there is an issue where the 2nd npm install, the handler.json's deps, was not actually getting run. So we mitigate this by calling `npm install` again, `prewatch` during running this app. 
+
+This really only matters when you are using development mode, and using `babel-watch`. Otherwise things should work as normal.
+
+### npmrc
+
 Only difference in the private version of node and public is the `.npmrc` file. The public version has a build arg although it's not used for simplicity in keeping these repos "duplicates".
+
+
