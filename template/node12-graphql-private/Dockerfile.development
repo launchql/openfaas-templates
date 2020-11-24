@@ -15,7 +15,6 @@ RUN yarn install
 
 # get goods
 COPY . .
-RUN chown -R app:app /home/app
 
 ENV cgi_headers="true"
 ENV fprocess="yarn run watch"
