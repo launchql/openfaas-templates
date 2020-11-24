@@ -115,7 +115,7 @@ This really only matters when you are using development mode, and using `babel-w
 
 ### npmrc
 
-Only in the production private version of node we add an entry into the `.npmrc` file temporarily during build step. In the development version, we actually store the npm token, and this is NOT suitable for production. DO NOT push the images built with the development version. You've been warned.
+Only in the production private version of node we add an entry into the `.npmrc` file temporarily during build step. In the development version, we actually store the npm token, and then delete it. This is NOT suitable for production. 
 
 # development vs. production
 
