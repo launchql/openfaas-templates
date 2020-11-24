@@ -16,6 +16,8 @@ RUN yarn install
 
 # get goods
 COPY . .
+RUN echo scripts-prepend-node-path=true > .npmrc
+RUN echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN} >> .npmrc
 RUN mv src/function/handler.json _handler.json 
 RUN node ./bin/merge.js && yarn install
 RUN rm .npmrc

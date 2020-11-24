@@ -31,7 +31,7 @@ for now, it only works with `docker-compose`, but here's an example compose file
 version: "3.7"
 services:
   postgres:
-    container_name: bitg-postgres
+    container_name: my-postgres
     image: pyramation/postgres
     environment:
       - "POSTGRES_USER=postgres"
@@ -41,7 +41,6 @@ services:
     expose:
       - "5432"
     volumes:
-      - ./packages:/sql-extensions
       - ./pgdata:/var/lib/postgresql/data
 
   example-python-fn:
@@ -118,4 +117,75 @@ This really only matters when you are using development mode, and using `babel-w
 
 Only difference in the private version of node and public is the `.npmrc` file. The public version has a build arg although it's not used for simplicity in keeping these repos "duplicates".
 
+# development vs. production
 
+## development
+
+Use `docker-compose`:
+
+```
+docker-compose build --build-arg NPM_TOKEN=${NPM_TOKEN}
+```
+
+## production
+
+Use `faas-cli`
+
+```sh
+faas-cli build -f $(FUNC_FILE) --build-arg NPM_TOKEN=${NPM_TOKEN}
+```
+
+## makefile
+
+example `Makefile` for all cases
+
+```
+FUNC_FILE ?= './stack.dev.yml'
+.PHONY: up down functions build templates check-env
+
+functions: check-env
+	which faas-cli || (echo "Please install 'faas-cli' package" && exit 1)
+	faas-cli build -f $(FUNC_FILE) --build-arg NPM_TOKEN=${NPM_TOKEN}
+
+templates:
+	which faas-cli || (echo "Please install 'faas-cli' package" && exit 1)
+	faas template pull https://github.com/launchql/openfaas-templates
+
+build: check-env
+	docker-compose build --build-arg NPM_TOKEN=${NPM_TOKEN}
+
+up:
+	docker-compose up
+
+down:
+	docker-compose down -v
+
+check-env:
+ifndef NPM_TOKEN
+	$(error NPM_TOKEN is undefined)
+endif
+```
+
+example `stack.dev.yaml`:
+
+```yml
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  send-email-verification:
+    lang: node12-graphql-private
+    handler: ./functions/send-email-verification
+    image: send-email-verification:latest
+    environment:
+      GRAPHQL_URL: http://launchql-service.webinc.svc.cluster.local:7777/graphql
+      INTERNAL_JOBS_API_URL: http://jobs-service.webinc.svc.cluster.local:23456/graphql
+      MAILGUN_KEY_FILE: /run/secrets/mailgun_key
+      MAILGUN_DEV_EMAIL: email@gmail.com
+      MAILGUN_DOMAIN: mg.domain.com
+      MAILGUN_FROM: support@domain.com
+      MAILGUN_REPLY: noreply@domain.com
+      scale_from_zero: true
+      inactivity_duration: 1m
+```
