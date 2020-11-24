@@ -121,6 +121,32 @@ Only in the production private version of node we add an entry into the `.npmrc`
 
 ## development
 
+ONLY IN DEVELOPEMENT: Make sure you specify in your `docker-compose.yaml`, the `NPM_TOKEN_FILE` path, and add a secret.
+
+```yaml
+services:
+  # ...
+  send-email-verification:
+  # ...
+    environment:
+      GRAPHQL_URL: http://launchql:7777/graphql
+      INTERNAL_JOBS_API_URL: http://jobs:23456/graphql
+      NPM_TOKEN_FILE: /run/secrets/npm_token
+      # ...
+    secrets:
+      - npm_token
+      - mailgun_key
+
+secrets:
+   npm_token:
+     file: ./secrets/npm_token.txt
+   mailgun_key:
+     file: ./secrets/mailgun_key.txt
+```
+
+Note that you should never need `NPM_TOKEN` or `NPM_TOKEN_FILE` in any production container. This is just to run npm install in a docker-compose, so we can mount a volume and get instant feedback when editing code. Once finished, we re-build for production and push those images. 
+
+
 Use `docker-compose`:
 
 ```
