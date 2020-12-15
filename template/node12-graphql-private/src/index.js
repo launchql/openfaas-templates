@@ -6,6 +6,8 @@ import handler from './function/handler';
 app.post('*', async (req, res, next) => {
   try {
     const result = await handler(req.body, {
+      jobId: req.get('X-Job-Id'),
+      databaseId: req.get('X-Database-Id'),
       client,
       jobsClient
     });
