@@ -2,8 +2,16 @@ from six.moves import urllib
 import json
 
 class GraphQLClient:
-    def __init__(self, endpoint):
+    def __init__(self, endpoint, headers):
         self.endpoint = endpoint
+        if headers is None:
+            self.headers = {}
+        else:
+            self.headers = headers
+
+        self.headers = self.headers.update({'Accept': 'application/json',
+                   'Content-Type': 'application/json'})
+
         self.token = None
         self.headername = None
 
@@ -17,8 +25,7 @@ class GraphQLClient:
     def _send(self, query, variables):
         data = {'query': query,
                 'variables': variables}
-        headers = {'Accept': 'application/json',
-                   'Content-Type': 'application/json'}
+        headers = self.headers
     
         if self.token is not None:
             headers[self.headername] = '{}'.format(self.token)

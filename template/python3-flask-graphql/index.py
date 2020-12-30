@@ -10,16 +10,16 @@ from graphql import client
 hostName = "0.0.0.0"
 PORT = int(os.environ['PORT'])
 GRAPHQL_URL = os.environ['GRAPHQL_URL']
-INTERNAL_JOBS_API_URL = os.environ['INTERNAL_JOBS_API_URL']
 
 app = Flask(__name__)
-apiClient = client.GraphQLClient(GRAPHQL_URL)
-jobsClient = client.GraphQLClient(INTERNAL_JOBS_API_URL)
 
 class FaasContext:
-    def __init__(self, client, jobsClient):
+    def __init__(self, jobId, databaseId, client, jobs, meta):
+        self.jobId = jobId
+        self.databaseId = databaseId
         self.client = client
-        self.jobsClient = jobsClient
+        self.jobs = jobs
+        self.meta = meta
 
 # distutils.util.strtobool() can throw an exception
 def is_true(val):
@@ -62,11 +62,30 @@ def faas_handler(path):
     resp.headers['Content-Type'] = 'application/json'
     resp.headers['X-Worker-Id'] = request.headers.get('X-Worker-Id')
     resp.headers['X-Job-Id'] = request.headers.get('X-Job-Id')
+    resp.headers['X-Database-Id'] = request.headers.get('X-Database-Id')
 
     params = get_params(request)
+    
+    databaseId = request.headers.get('X-Database-Id')
+    jobId = request.headers.get('X-Job-Id')
+
+    apiClient = client.GraphQLClient(GRAPHQL_URL, {
+          'X-Api-Name': 'private',
+          'X-Database-Id': databaseId
+        })
+
+    jobsClient = client.GraphQLClient(GRAPHQL_URL, {
+          'X-Api-Name': 'jobs',
+          'X-Database-Id': databaseId
+        })
+
+    metaClient = client.GraphQLClient(GRAPHQL_URL, {
+          'X-Meta-Schema': True,
+          'X-Database-Id': databaseId
+        })
 
     try:
-        ctx = FaasContext(apiClient, jobsClient)
+        ctx = FaasContext(jobId, databaseId, apiClient, jobsClient, metaClient)
         value = handler.handle(params, ctx)
         resp.data = json.dumps(value)
     except Exception as e:

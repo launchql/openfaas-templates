@@ -40,8 +40,8 @@ app.post('*', async (req, res, next) => {
       jobId,
       databaseId,
       client,
-      meta,
-      jobs
+      jobs,
+      meta
     });
     
     res.status(200).json(result);
