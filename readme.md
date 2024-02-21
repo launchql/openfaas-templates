@@ -1,4 +1,8 @@
-testing out openfaas templates
+# LaunchQL OpenFAAS Templates
+
+<p align="center" width="100%">
+    <img src="https://github.com/launchql/libpg-query-node/assets/545047/5fd420cc-cdc6-4211-9b0f-0eca8321ba72" alt="webincubator" width="100">
+</p>
 
 # get started
 
